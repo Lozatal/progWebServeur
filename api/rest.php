@@ -18,13 +18,13 @@
   ];
 
   $errors = require_once __DIR__ . '/../src/conf/api_errors.php';
-  
+
   $c=new \Slim\Container(array_merge( $configuration, $errors) );
   $app=new \Slim\App($c);
   $c = $app->getContainer();
 
   //Application
-  $app->get('/categories/',
+  $app->get('/categories[/]',
     function(Request $req, Response $resp, $args){
       $resp=$resp->withHeader('Content-Type','application/json');
       $ctrl=new Catalogue($this);
@@ -40,7 +40,12 @@
       $resp->getBody()->write($ctrl->getCatalogueId($name));
       return $resp;
     }
-  )->setName("categoriesID");;
-
+  )->setName("categoriesID");
+  $app->post('/categories[/]',
+    function(Request $req, Response $resp, $args){
+      $ctrl=new Catalogue($this);
+      return $ctrl->createCategorie($req,$resp,$args);
+    }
+  );
   $app->run();
 ?>
